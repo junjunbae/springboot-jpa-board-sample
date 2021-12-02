@@ -54,7 +54,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
                 .logout()
                 .logoutSuccessUrl("/login") // 로그아웃 > 로그인 페이지로 리다이렉션
-                .invalidateHttpSession(true); // 세션 해제
+                .invalidateHttpSession(true) // 세션 해제
+            .and()
+                .exceptionHandling().accessDeniedPage("/denied"); // 권한x
     }
 
     @Override
