@@ -1,6 +1,6 @@
 package com.example.sampleboard.repository;
 
-import com.example.sampleboard.entity.User;
+import com.example.sampleboard.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

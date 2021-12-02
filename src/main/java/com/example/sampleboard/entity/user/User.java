@@ -1,5 +1,6 @@
-package com.example.sampleboard.entity;
+package com.example.sampleboard.entity.user;
 
+import com.example.sampleboard.entity.base.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Entity
 @Table(name = "TB_USER")
 @Getter
-public class User implements UserDetails { // UserDetails는 스프링 시큐리티 사용에 있어 필요한 기본적인 요소들을 포함
+public class User extends BaseEntity implements UserDetails { // UserDetails는 스프링 시큐리티 사용에 있어 필요한 기본적인 요소들을 포함
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;

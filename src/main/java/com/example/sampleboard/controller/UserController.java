@@ -1,6 +1,6 @@
 package com.example.sampleboard.controller;
 
-import com.example.sampleboard.entity.dto.UserDto;
+import com.example.sampleboard.entity.user.dto.UserDto;
 import com.example.sampleboard.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;

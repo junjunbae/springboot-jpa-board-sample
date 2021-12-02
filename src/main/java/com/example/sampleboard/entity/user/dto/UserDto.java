@@ -1,4 +1,4 @@
-package com.example.sampleboard.entity.dto;
+package com.example.sampleboard.entity.user.dto;
 
 import lombok.Data;
 
