@@ -1,4 +1,4 @@
-package com.example.sampleboard.controller;
+package com.example.sampleboard.controller.user;
 
 import com.example.sampleboard.entity.user.dto.UserDto;
 import com.example.sampleboard.service.UserService;
@@ -8,13 +8,15 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @RequiredArgsConstructor
 @Controller
-public class UserController {
+@RequestMapping("/api")
+public class UserApiController {
 
     private final UserService userService;
 
@@ -25,11 +27,6 @@ public class UserController {
         return "redirect:/login";
     }
 
-    // 로그아웃
-    @GetMapping(value = "/logout")
-    public String logoutPage(HttpServletRequest request, HttpServletResponse response){
-        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        return "redirect:/login";
-    }
+//
 
 }

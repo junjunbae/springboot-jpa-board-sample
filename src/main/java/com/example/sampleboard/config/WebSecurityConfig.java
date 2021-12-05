@@ -43,14 +43,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/login", "/signup", "/user").permitAll() // 허용 경로
+                .antMatchers("/login", "/signup", "/api/user").permitAll() // 허용 경로
                 .antMatchers("/").hasRole("USER") // USER 그룹
                 .antMatchers("/admin").hasRole("ADMIN") // ADMIN 그룹
                 .anyRequest().authenticated() // Role구분 값에 관계없이 권한필요
             .and()
                 .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/") // 로그인 > 루트 페이지로 리다이렉션
+                .defaultSuccessUrl("/main") // 로그인 > 루트 페이지로 리다이렉션
             .and()
                 .logout()
                 .logoutSuccessUrl("/login") // 로그아웃 > 로그인 페이지로 리다이렉션

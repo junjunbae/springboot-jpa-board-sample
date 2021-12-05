@@ -1,6 +1,9 @@
 package com.example.sampleboard.entity.base;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -23,15 +26,17 @@ public abstract class BaseEntity {
      */
 
     @CreatedBy
-    @Column(nullable = false, updatable = false)
-    private String createId;
+    @Column(updatable = false)
+    private String createdId;
 
     @CreatedDate
-    private LocalDateTime createDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime createdDate;
 
     @LastModifiedBy
     private String modifiedId;
 
     @LastModifiedDate
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedDate;
 }

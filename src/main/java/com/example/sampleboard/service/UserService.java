@@ -27,11 +27,6 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(()-> new UsernameNotFoundException(email));
     }
 
-    /**
-     *
-     * @param userDto
-     * @return userId
-     */
     public Long save(UserDto userDto){
         boolean existUser = userRepository.findByEmail(userDto.getEmail()).isEmpty();
 
