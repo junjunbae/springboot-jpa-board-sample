@@ -53,4 +53,30 @@ public class Board extends BaseEntity {
     public void delete() {
         this.useYn = false;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) { // null인지
+            return false;
+        }
+
+        if (obj == this) { // this인지
+            return true;
+        }
+
+        if(getClass() != obj.getClass()){ // 참조 클래스가 같은지
+            return false;
+        }
+
+        Board board = (Board)obj; // 같은 클래스인 경우 형변환
+        return (this.getBoardId() == board.getBoardId()); // this와 obj의 pk값 비교
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 31;
+        int result = 1;
+        result = (int) (PRIME * result + getBoardId());
+        return result;
+    }
 }
