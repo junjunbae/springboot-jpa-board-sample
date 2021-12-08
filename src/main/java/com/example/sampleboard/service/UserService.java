@@ -1,7 +1,7 @@
 package com.example.sampleboard.service;
 
 import com.example.sampleboard.entity.user.User;
-import com.example.sampleboard.entity.user.dto.UserDto;
+import com.example.sampleboard.entity.user.dto.UserRequestDto;
 import com.example.sampleboard.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,21 +27,15 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(()-> new UsernameNotFoundException(email));
     }
 
-    public Long save(UserDto userDto){
-        boolean existUser = userRepository.findByEmail(userDto.getEmail()).isEmpty();
+    public Long save(UserRequestDto userRequestDto){
+        boolean existUser = userRepository.findByEmail(userRequestDto.getEmail()).isEmpty();
 
         if(!existUser) return null; // 기존회원
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        userDto.setPassword(encoder.encode(userDto.getPassword()));
+        userRequestDto.setPassword(encoder.encode(userRequestDto.getPassword()));
 
-        return userRepository.save(
-                User.builder()
-                        .email(userDto.getEmail())
-                        .password(userDto.getPassword())
-                        .auth(userDto.getAuth())
-                        .build()
-                ).getUserId();
+        return userRepository.save(userRequestDto.toEntity()).getUserId();
     }
 
 }

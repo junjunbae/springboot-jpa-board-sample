@@ -20,8 +20,8 @@ public class BoardService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Long registerBoard(BoardRequestDto BoardRequestDto) {
-        return boardRepository.save(BoardRequestDto.toEntity()).getBoardId();
+    public Long registerBoard(BoardRequestDto boardRequestDto) {
+        return boardRepository.save(boardRequestDto.toEntity()).getBoardId();
     }
 
     public List<BoardResponseDto> findBoardAll() {
