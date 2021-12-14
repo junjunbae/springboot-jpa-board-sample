@@ -44,8 +44,11 @@
         </table>
 
         <!-- 페이징 -->
-        <nav>
+        <nav id="page">
         </nav>
+
+<!--        <input type="text" id="input_page" value="0"/>-->
+<!--        <button onclick="onSelectAction()">page</button>-->
     </div>
 </th:block>
 
@@ -59,36 +62,65 @@
         }
 
         // 조회
-        function onSelectAction() {
+        function onSelectAction(_page) {
 
-            fetch('/api/boards').then(response => {
+            fetch('/api/boards?' + new URLSearchParams({
+                // size : _size,
+                page : _page
+
+            })).then(response => {
                 if (response.ok) {
                     return response.json();
                 }
             }).then(json => {
                 let html = '';
+                const result = json.RESULT;
+                const list = result.content;
+                const page = result.pageable;
+                const startPage = json.startPage;
+                const endPage = json.endPage;
 
-                if (!json.length) {
+                console.log(json);
+
+                /* list */
+                if (!list.length) {
                     html = '<td colspan="7">게시글이 없습니다.</td>';
+
                 } else {
-                    json.forEach((obj, idx) => {
+                    list.forEach((board, idx) => {
                         html += `
 							<tr>
-    							<td>${json.length - idx}</td>
+    							<td>${result.totalElements - (idx + (page.pageSize * page.pageNumber))}</td>
     							<td class="text-left">
-    								<a href="javascript: void(0);" onclick="onOpenViewAction('/boards/'+${obj.boardId})">${obj.title}</a>
+    								<a href="javascript: void(0);" onclick="onOpenViewAction('/boards/'+${board.boardId})">${board.title}</a>
     							</td>
-    							<td>${obj.contents}</td>
-    							<td>${obj.createdId}</td>
-    							<td>${obj.createdDate}</td>
-    							<td>${obj.modifiedId}</td>
-    							<td>${obj.modifiedDate}</td>
-    							<td>${obj.hit}</td>
+    							<td>${board.contents}</td>
+    							<td>${board.createdId}</td>
+    							<td>${board.createdDate}</td>
+    							<td>${board.modifiedId}</td>
+    							<td>${board.modifiedDate}</td>
+    							<td>${board.hit}</td>
 							</tr>
 						`;
                     });
                 }
                 document.getElementById('list').innerHTML = html;
+
+                /* paging */
+                html = `
+                <ul>
+                    <li><a href="javascript: void(0);" class="${0 == page.pageNumber} ? 'disable':''" onclick="onSelectAction(0)"><<</a></li>
+                    <li><a href="javascript: void(0);" class="${startPage == page.pageNumber} ? 'disable':''" onclick="onSelectAction(${startPage-1})"><</a></li>`;
+
+                for(let i=startPage ; i<=endPage ; i++){
+                    html += `<li><a href="javascript: void(0);" class="${page.pageNumber == i} ? 'disable':''" onclick="onSelectAction(${i-1})">${i}${page.pageNumber == i-1?'V':''}</a></li>`;
+                }
+                html += `
+                    <li><a href="javascript: void(0);" class="${endPage == page.pageNumber} ? 'disable':''" onclick="onSelectAction(${endPage-1})">></a></li>
+                    <li><a href="javascript: void(0);" class="${result.totalPages == page.pageNumber} ? 'disable':''" onclick="onSelectAction(${result.totalPages-1})">>></a></li>
+                </ul>`;
+                document.getElementById('page').innerHTML = html;
+
             });
         }
 

@@ -5,13 +5,15 @@ import com.example.sampleboard.entity.board.dto.BoardRequestDto;
 import com.example.sampleboard.entity.board.dto.BoardResponseDto;
 import com.example.sampleboard.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
+import java.util.HashMap;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,12 +26,19 @@ public class BoardService {
         return boardRepository.save(boardRequestDto.toEntity()).getBoardId();
     }
 
-    public List<BoardResponseDto> findBoardAll() {
-        List<Board> list = boardRepository.findByUseYn(true, Sort.by(Sort.Direction.DESC, "boardId"));
+    public HashMap<String, Object> findBoardAll(Pageable page) {
+        HashMap<String, Object> map = new HashMap();
 
-        return list.stream() // 조회결과 list를 stream으로 읽고
-                .map(BoardResponseDto::new) // 각각의 요소들을 BoardResponseDto로 형변환하여
-                .collect(Collectors.toList()); // list로 담아 최종 리턴.
+        Page<Board> boards = boardRepository.findByUseYn(true, PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Direction.DESC, "boardId")));
+//        List<BoardResponseDto> boardResponseDtoList = list.getContent().stream().map(BoardResponseDto::new).collect(Collectors.toList());
+
+        int startPage = Math.max(1, boards.getPageable().getPageNumber()-4);
+        int endPage = Math.min(boards.getTotalPages(), boards.getPageable().getPageNumber()+4);
+        map.put("startPage", startPage);
+        map.put("endPage", endPage);
+        map.put("RESULT", boards);
+
+        return map;
     }
 
     @Transactional

@@ -4,9 +4,11 @@ import com.example.sampleboard.entity.board.dto.BoardRequestDto;
 import com.example.sampleboard.entity.board.dto.BoardResponseDto;
 import com.example.sampleboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.HashMap;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,8 +23,8 @@ public class BoardApiController {
     }
 
     @GetMapping("")
-    public List<BoardResponseDto> findBoardAll() {
-        return boardService.findBoardAll();
+    public HashMap<String, Object> findBoardAll(@PageableDefault(page = 0, size = 2) Pageable page) {
+        return boardService.findBoardAll(page);
     }
 
     @GetMapping("/{boardId}")
