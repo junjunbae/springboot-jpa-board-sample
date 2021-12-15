@@ -1,7 +1,5 @@
 package com.example.sampleboard;
 
-import com.example.sampleboard.entity.dto.UserDto;
-import com.example.sampleboard.service.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

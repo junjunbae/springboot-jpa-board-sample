@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorator="layout" xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<th:block layout:fragment="content">
+    <!-- 게시글 입력-->
+    <form id="boardForm">
+        <input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" readonly="true"/>
+
+        <label for="title">Title</label>
+        <input type="text" id="title" placeholder="제목을 입력하세요."/>
+        <br>
+
+        <label for="contents">Contents</label>
+        <input type="textarea" id="contents" placeholder="내용을 입력하세요."/>
+        <br>
+    </form>
+
+    <!-- 메뉴 -->
+    <button type="button" onclick="onSaveAction()">Save!!</button><br>
+    <button type="button" onclick="onOpenViewAction('/boards')">list..</button><br>
+</th:block>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+
+        window.onload = () => {
+            const boardForm = document.getElementById('boardForm');
+            boardForm.title.focus();
+        }
+
+        // 저장 전 체크
+        function onSaveActionCheck() {
+            const boardForm = document.getElementById('boardForm');
+
+            if(!boardForm.title.value.trim()){
+                alert('제목을 입력하세요.');
+                boardForm.title.focus();
+                return false;
+            }
+            if(!boardForm.contents.value.trim()){
+                alert('내용을 입력하세요.');
+                boardForm.contents.focus();
+                return false;
+            }
+            return true;
+        }
+
+        // 저장
+        function onSaveAction() {
+            if(!onSaveActionCheck()) return;
+
+            const boardForm = document.getElementById('boardForm');
+            const params = {
+                title: boardForm.title.value,
+                contents: boardForm.contents.value,
+                useYn: true
+            };
+
+            fetch('/api/boards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': boardForm.csrf.value
+                },
+                body: JSON.stringify(params)
+
+            }).then(response => {
+                if(!response.ok) throw new Error('onSaveAction fail..');
+
+                alert('저장완료');
+                onOpenViewAction('/boards');
+
+            }).catch(error => {
+                alert('오류가 발생하였습니다.');
+            });
+        }
+
+        // 목록으로
+        function onOpenViewAction(_path) {
+            location.href = '/view'+_path;
+        }
+
+    </script>
+</th:block>
+
+</html>

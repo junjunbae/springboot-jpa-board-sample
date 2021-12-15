@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorator="layout"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+
+<th:block layout:fragment="content">
+    <!-- 게시글 -->
+    <form id="boardForm">
+        <input type="hidden" id="csrf" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" readonly="true"/>
+        <input type="hidden" id="boardId" th:value="${boardId}" />
+
+        <label for="title">Title</label>
+        <input type="text" id="title" readonly="true"/>
+        <br>
+
+        <label for="contents">Contents</label>
+        <input type="textarea" id="contents" readonly="true"/>
+        <br>
+
+        ============================================
+        <label for="hit">hit</label>
+        <input type="text" id="hit" readonly="true"/>
+        <br>
+        <label for="createdId">createdId : </label>
+        <input type="text" id="createdId" readonly="true"/>
+        <br>
+        <label for="createdDate">createdDate : </label>
+        <input type="text" id="createdDate" readonly="true"/>
+        <br>
+        <label for="modifiedId">modifiedId : </label>
+        <input type="text" id="modifiedId" readonly="true"/>
+        <br>
+        <label for="modifiedDate">modifiedDate : </label>
+        <input type="text" id="modifiedDate" readonly="true"/>
+        <br>
+    </form>
+
+    <!-- 메뉴 -->
+    <button type="button" onclick="onEditEvent(true)">Edit-></button>
+    <button type="button" onclick="onEditEvent(false)" id="btnCancel" hidden="true">Cancel</button>
+    <button type="button" onclick="onSaveAction()" id="btnSave" hidden="true">Save</button>
+    /
+    <button type="button" onclick="onDeleteAction()">Del..</button><br>
+    <button type="button" onclick="onOpenViewAction('/boards')">list..</button><br>
+</th:block>
+
+<script th:inline="javascript">
+
+    window.onload = () => {
+        onSelectAction();
+    }
+
+    // 조회
+    function onSelectAction(){
+        const boardForm = document.getElementById('boardForm');
+
+        fetch('/api/boards/'+boardForm.boardId.value).then(response => {
+            if(!response.ok) throw new Error('findBoardByBoardId Request Fail');
+            return response.json();
+
+        }).then(json =>{
+            console.table(json);
+
+            boardForm.boardId.value = json.boardId;
+            boardForm.title.value = json.title;
+            boardForm.contents.value = json.contents;
+            boardForm.hit.value = json.hit;
+            boardForm.createdId.value = json.createdId;
+            boardForm.createdDate.value = json.createdDate;
+            boardForm.modifiedId.value = json.modifiedId;
+            boardForm.modifiedDate.value = json.modifiedDate;
+
+        }).catch(error => {
+            alert('해당 게시글을 찾을 수 없습니다.');
+            onOpenViewAction('/board/list');
+        });
+    }
+
+    // 삭제
+    function onDeleteAction(){
+        const boardForm = document.getElementById('boardForm');
+
+        if(!confirm('해당 게시글을 삭제하시겠습니까?')) return false;
+
+        fetch('/api/boards/'+boardForm.boardId.value, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': boardForm.csrf.value
+            }
+        }).then(response => {
+            if(!response.ok) throw new Error('onDeleteAction Request Fail')
+
+            alert('삭제완료');
+            onOpenViewAction('/boards');
+        }).catch(error => {
+            alert('onDeleteAction Error');
+        });
+    }
+
+    // 수정event
+    function onEditEvent(_yn){
+        let boardForm = document.getElementById('boardForm');
+        let btnCancel = document.getElementById('btnCancel');
+        let btnSave = document.getElementById('btnSave');
+
+        boardForm.title.readOnly = !_yn;
+        boardForm.contents.readOnly = !_yn;
+        btnCancel.hidden = !_yn;
+        btnSave.hidden = !_yn;
+
+        if(!_yn) onSelectAction();
+    }
+
+    // 수정사항 저장
+    function onSaveActionCheck() {
+        const boardForm = document.getElementById('boardForm');
+
+        if(!boardForm.title.value.trim()){
+            alert('제목을 입력하세요.');
+            boardForm.title.focus();
+            return false;
+        }
+        if(!boardForm.contents.value.trim()){
+            alert('내용을 입력하세요.');
+            boardForm.contents.focus();
+            return false;
+        }
+        return true;
+    }
+
+    function onSaveAction(){
+        if(!onSaveActionCheck()) return;
+
+        const boardForm = document.getElementById('boardForm');
+        const params = {
+            title: boardForm.title.value,
+            contents: boardForm.contents.value,
+            useYn: true
+        };
+        const boardId = boardForm.boardId.value;
+
+        fetch('/api/boards/'+boardId, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': boardForm.csrf.value
+            },
+            body: JSON.stringify(params)
+
+        }).then(response => {
+            if(!response.ok) throw new Error('onSaveAction fail..');
+
+            alert('저장완료');
+            onOpenViewAction('/boards/'+boardId);
+
+        }).catch(error => {
+            alert('오류가 발생하였습니다.');
+        });
+
+    }
+
+
+    // 목록으로
+    function onOpenViewAction(_path) {
+        location.href = '/view'+_path;
+    }
+
+</script>
+<th:block layout:fragment="script">
+</th:block>
+
+</html>
