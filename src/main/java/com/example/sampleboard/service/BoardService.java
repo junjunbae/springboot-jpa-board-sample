@@ -26,11 +26,26 @@ public class BoardService {
         return boardRepository.save(boardRequestDto.toEntity()).getBoardId();
     }
 
-    public HashMap<String, Object> findBoardAll(Pageable page) {
+    public HashMap<String, Object> findBoardAll(Pageable page, String searchType, String searchKeyword) {
         HashMap<String, Object> map = new HashMap();
 
-        Page<Board> boards = boardRepository.findByUseYn(true, PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Direction.DESC, "boardId")));
+        Page<Board> boards = null;
 //        List<BoardResponseDto> boardResponseDtoList = list.getContent().stream().map(BoardResponseDto::new).collect(Collectors.toList());
+
+        switch(searchType){
+            case "title":
+                boards = boardRepository.findByUseYnAndTitleContains(true, searchKeyword, PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Direction.DESC, "boardId")));
+                break;
+            case "content":
+                boards = boardRepository.findByUseYnAndContentsContains(true, searchKeyword, PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Direction.DESC, "boardId")));
+                break;
+            case "writer":
+                boards = boardRepository.findByUseYnAndCreatedIdContains(true, searchKeyword, PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Direction.DESC, "boardId")));
+                break;
+            default:
+                boards = boardRepository.findByUseYn(true, PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Direction.DESC, "boardId")));
+                break;
+        }
 
         int startPage = Math.max(1, boards.getPageable().getPageNumber()-4);
         int endPage = Math.min(boards.getTotalPages(), boards.getPageable().getPageNumber()+4);

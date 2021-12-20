@@ -23,8 +23,10 @@ public class BoardApiController {
     }
 
     @GetMapping("")
-    public HashMap<String, Object> findBoardAll(@PageableDefault(page = 0, size = 2) Pageable page) {
-        return boardService.findBoardAll(page);
+    public HashMap<String, Object> findBoardAll(@PageableDefault(page = 0, size = 5) Pageable page,
+                                                @RequestParam String searchType,
+                                                @RequestParam String searchKeyword) {
+        return boardService.findBoardAll(page, searchType, searchKeyword);
     }
 
     @GetMapping("/{boardId}")

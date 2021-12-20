@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Controller
-@RequestMapping("/view/boards")
+@RequestMapping("/boards")
 public class BoardViewController {
 
     @RequestMapping({"", "/"})
