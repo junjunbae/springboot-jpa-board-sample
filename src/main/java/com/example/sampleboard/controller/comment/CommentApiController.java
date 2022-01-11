@@ -2,7 +2,7 @@ package com.example.sampleboard.controller.comment;
 
 import com.example.sampleboard.entity.comment.dto.CommentRequestDto;
 import com.example.sampleboard.entity.comment.dto.CommentResponseDto;
-import com.example.sampleboard.service.ReplyService;
+import com.example.sampleboard.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,19 +10,19 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/reply")
+@RequestMapping("/api/comment")
 public class CommentApiController {
 
-    private final ReplyService replyService;
+    private final CommentService commentService;
 
     @PostMapping(value = "")
     public Long registerReply(@RequestBody CommentRequestDto commentRequestDto){
-        return replyService.registerReply(commentRequestDto);
+        return commentService.registerReply(commentRequestDto);
     }
 
     @GetMapping(value = "/{boardId}")
     public List<CommentResponseDto> findReplyByBoardId(@PathVariable Long boardId){
-        return replyService.findReplyByBoardId(boardId);
+        return commentService.findReplyByBoardId(boardId);
     }
 
 }

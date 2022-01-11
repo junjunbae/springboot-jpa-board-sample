@@ -9,7 +9,6 @@ public class CommentRequestDto {
 
     private String contents;
     private Long boardId;
-
     private Board board;
 
     public Comment toEntity(){
