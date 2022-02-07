@@ -1,6 +1,5 @@
 package com.example.sampleboard.entity.board.dto;
 
-import com.example.sampleboard.entity.base.BaseEntity;
 import com.example.sampleboard.entity.board.Board;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

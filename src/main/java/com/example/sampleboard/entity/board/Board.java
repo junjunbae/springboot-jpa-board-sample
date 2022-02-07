@@ -1,12 +1,14 @@
 package com.example.sampleboard.entity.board;
 
 import com.example.sampleboard.entity.base.BaseEntity;
-import lombok.Builder;
+import com.example.sampleboard.entity.comment.Comment;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.List;
 
 
 @Getter
@@ -25,6 +27,10 @@ public class Board extends BaseEntity {
     private int hit;
     @ColumnDefault("1")
     private boolean useYn;
+
+    @OneToMany(mappedBy = "board")
+    @JsonIgnore
+    private List<Comment> comments;
 
     private Board(String title, String contents, int hit, boolean useYn) {
         this.title = title;

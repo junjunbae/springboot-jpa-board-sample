@@ -3,6 +3,7 @@ package com.example.sampleboard.service;
 import com.example.sampleboard.entity.board.Board;
 import com.example.sampleboard.entity.board.dto.BoardRequestDto;
 import com.example.sampleboard.entity.board.dto.BoardResponseDto;
+import com.example.sampleboard.enumc.SearchType;
 import com.example.sampleboard.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,8 @@ import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.NoSuchElementException;
 
+import static com.example.sampleboard.enumc.SearchType.*;
+
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -26,19 +29,34 @@ public class BoardService {
         return boardRepository.save(boardRequestDto.toEntity()).getBoardId();
     }
 
-    public HashMap<String, Object> findBoardAll(Pageable page) {
-        HashMap<String, Object> map = new HashMap();
+    public HashMap<String, Object> findBoardAll(Pageable page, String searchType, String searchKeyword) {
+        HashMap<String, Object> returnMap = new HashMap();
 
-        Page<Board> boards = boardRepository.findByUseYn(true, PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Direction.DESC, "boardId")));
+        Page<Board> boards = null;
 //        List<BoardResponseDto> boardResponseDtoList = list.getContent().stream().map(BoardResponseDto::new).collect(Collectors.toList());
+
+        switch(SearchType.valueOf(searchType)){
+            case TITLE:
+                boards = boardRepository.findByUseYnTrueAndTitleContains(searchKeyword, PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Direction.DESC, "boardId")));
+                break;
+            case CONTENT:
+                boards = boardRepository.findByUseYnTrueAndContentsContains(searchKeyword, PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Direction.DESC, "boardId")));
+                break;
+            case WRITER:
+                boards = boardRepository.findByUseYnTrueAndCreatedIdContains(searchKeyword, PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Direction.DESC, "boardId")));
+                break;
+            default:
+                boards = boardRepository.findByUseYnTrue(PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Direction.DESC, "boardId")));
+                break;
+        }
 
         int startPage = Math.max(1, boards.getPageable().getPageNumber()-4);
         int endPage = Math.min(boards.getTotalPages(), boards.getPageable().getPageNumber()+4);
-        map.put("startPage", startPage);
-        map.put("endPage", endPage);
-        map.put("RESULT", boards);
+        returnMap.put("startPage", startPage);
+        returnMap.put("endPage", endPage);
+        returnMap.put("RESULT", boards);
 
-        return map;
+        return returnMap;
     }
 
     @Transactional

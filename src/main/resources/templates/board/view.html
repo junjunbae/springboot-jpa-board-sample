@@ -18,6 +18,7 @@
         <br>
 
         ============================================
+        <br>
         <label for="hit">hit</label>
         <input type="text" id="hit" readonly="true"/>
         <br>
@@ -42,6 +43,31 @@
     /
     <button type="button" onclick="onDeleteAction()">Del..</button><br>
     <button type="button" onclick="onOpenViewAction('/boards')">list..</button><br>
+
+    ============================================
+    <br>
+    <label for="comment">comment : </label>
+    <input type="text" id="comment"/>
+    <button type="button" onclick="onCommentSaveAction()" id="btnCommentSave">Save</button>
+
+    <table>
+        <thead>
+        <tr>
+            <th>번호</th>
+            <th>내용</th>
+            <th>좋아요</th>
+            <th>작성자</th>
+            <th>작성일자</th>
+            <th>수정일자</th>
+        </tr>
+        </thead>
+
+        <!-- 댓글 리스트-->
+        <tbody id="commentList">
+        </tbody>
+
+    </table>
+
 </th:block>
 
 <script th:inline="javascript">
@@ -59,8 +85,6 @@
             return response.json();
 
         }).then(json =>{
-            console.table(json);
-
             boardForm.boardId.value = json.boardId;
             boardForm.title.value = json.title;
             boardForm.contents.value = json.contents;
@@ -69,6 +93,38 @@
             boardForm.createdDate.value = json.createdDate;
             boardForm.modifiedId.value = json.modifiedId;
             boardForm.modifiedDate.value = json.modifiedDate;
+
+            /* 댓글 조회 */
+            fetch('/api/comments/'+boardForm.boardId.value).then(response => {
+                if(!response.ok) throw new Error('findReplyByBoardId(comment) Request Fail');
+                return response.json();
+
+            }).then(json =>{
+                let html = '';
+
+                console.log(json);
+
+                if (!json.length) {
+                    html = '<td colspan="7">댓글이 없습니다.</td>';
+                } else {
+                    json.forEach((comment, idx) => {
+                        html += `
+                            <tr>
+                                <td>${idx+1}</td>
+                                <td>${comment.contents}</td>
+                                <td>${comment.likeCnt}</td>
+                                <td>${comment.createdId}</td>
+                                <td>${comment.createdDate}</td>
+                                <td>${comment.modifiedDate}</td>
+                            </tr>
+                        `;
+                    });
+                }
+                document.getElementById('commentList').innerHTML = html;
+
+            }).catch(error => {
+                alert('해당 게시글의 댓글을 찾을 수 없습니다.');
+            });
 
         }).catch(error => {
             alert('해당 게시글을 찾을 수 없습니다.');
@@ -160,10 +216,41 @@
 
     }
 
+    function onCommentSaveAction(){
+        const boardForm = document.getElementById('boardForm');
+        const comment = document.getElementById('comment');
+
+        const params = {
+            contents: comment.value,
+            boardId: boardForm.boardId.value
+        };
+
+        console.log(comment.value);
+
+        fetch('/api/comments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': boardForm.csrf.value
+            },
+            body: JSON.stringify(params)
+
+        }).then(response => {
+            if(!response.ok) throw new Error('onCommentSaveAction fail..');
+
+            alert('저장완료');
+            // onOpenViewAction 말고 댓글만 리프레시하기!!
+            onOpenViewAction('/boards/'+boardForm.boardId.value);
+
+        }).catch(error => {
+            alert('오류가 발생하였습니다.');
+        });
+    }
+
 
     // 목록으로
     function onOpenViewAction(_path) {
-        location.href = '/view'+_path;
+        location.href = _path;
     }
 
 </script>

@@ -5,7 +5,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BoardRepository extends JpaRepository<Board, Long> {
-    Page<Board> findByUseYn(boolean useYn, Pageable pageSort);
+import java.util.Optional;
 
+public interface BoardRepository extends JpaRepository<Board, Long> {
+    Optional<Board> findByBoardIdAndUseYn(Long boardId, boolean useYn);
+
+    Page<Board> findByUseYnTrue(Pageable pageSort);
+
+    Page<Board> findByUseYnTrueAndTitleContains(String searchKeyword, Pageable boardId);
+
+    Page<Board> findByUseYnTrueAndContentsContains(String searchKeyword, Pageable boardId);
+
+    Page<Board> findByUseYnTrueAndCreatedIdContains(String searchKeyword, Pageable boardId);
 }
