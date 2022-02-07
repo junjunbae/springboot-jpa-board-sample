@@ -95,7 +95,7 @@
             boardForm.modifiedDate.value = json.modifiedDate;
 
             /* 댓글 조회 */
-            fetch('/api/comment/'+boardForm.boardId.value).then(response => {
+            fetch('/api/comments/'+boardForm.boardId.value).then(response => {
                 if(!response.ok) throw new Error('findReplyByBoardId(comment) Request Fail');
                 return response.json();
 
@@ -110,7 +110,7 @@
                     json.forEach((comment, idx) => {
                         html += `
                             <tr>
-                                <td>${idx}</td>
+                                <td>${idx+1}</td>
                                 <td>${comment.contents}</td>
                                 <td>${comment.likeCnt}</td>
                                 <td>${comment.createdId}</td>
@@ -227,7 +227,7 @@
 
         console.log(comment.value);
 
-        fetch('/api/comment', {
+        fetch('/api/comments', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

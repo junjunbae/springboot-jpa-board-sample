@@ -31,15 +31,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "boardId")
     private Board board;
 
-    public Comment(Long commentId, String contents, boolean useYn, int likeCnt, Board board) {
-        this.commentId = commentId;
-        this.contents = contents;
-        this.useYn = useYn;
-        this.likeCnt = likeCnt;
-        this.board = board;
-    }
-
-    public Comment(String contents, Board board) {
+    private Comment(String contents, Board board) {
         this.contents = contents;
         this.board = board;
     }

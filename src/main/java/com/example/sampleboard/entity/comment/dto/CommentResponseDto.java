@@ -35,4 +35,16 @@ public class CommentResponseDto {
         this.resBoardDto = new BoardResponseDto(comment.getBoard());
     }
 
+//    public CommentResponseDto(Long commentId, String contents, boolean useYn, int likeCnt, String createdId, LocalDateTime createdDate, String modifiedId, LocalDateTime modifiedDate, BoardResponseDto resBoardDto){
+//        this.commentId = commentId;
+//        this.contents = contents;
+//        this.useYn = useYn;
+//        this.likeCnt = likeCnt;
+//        this.createdId = createdId;
+//        this.createdDate = createdDate;
+//        this.modifiedId = modifiedId;
+//        this.modifiedDate = modifiedDate;
+//        this.resBoardDto = resBoardDto;
+//    }
+
 }

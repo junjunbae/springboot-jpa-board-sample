@@ -10,14 +10,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/comment")
+@RequestMapping("/api/comments")
 public class CommentApiController {
 
     private final CommentService commentService;
 
     @PostMapping(value = "")
     public Long registerReply(@RequestBody CommentRequestDto commentRequestDto){
-        return commentService.registerReply(commentRequestDto);
+        return commentService.registerComment(commentRequestDto);
     }
 
     @GetMapping(value = "/{boardId}")

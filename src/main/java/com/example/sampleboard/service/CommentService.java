@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -22,10 +23,11 @@ public class CommentService {
     private final BoardRepository boardRepository;
 
     @Transactional
-    public Long registerReply(CommentRequestDto commentRequestDto) {
-        Optional<Board> board = boardRepository.findByBoardIdAndUseYn(commentRequestDto.getBoardId(), true);
+    public Long registerComment(CommentRequestDto commentRequestDto) {
+        Board board = boardRepository.findByBoardIdAndUseYn(commentRequestDto.getBoardId(), true)
+                .orElseThrow(NoSuchElementException::new);
 
-        commentRequestDto.setBoard(board.get());
+        commentRequestDto.setBoard(board);
 
         return commentRepository.save(commentRequestDto.toEntity()).getCommentId();
     }
@@ -37,6 +39,20 @@ public class CommentService {
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
 
+//        for(Comment comment : comments){
+//            resComments.add(new CommentResponseDto(comment.getCommentId(),
+//                    comment.getContents(),
+//                    comment.isUseYn(),
+//                    comment.getLikeCnt(),
+//                    comment.getCreatedId(),
+//                    comment.getCreatedDate(),
+//                    comment.getModifiedId(),
+//                    comment.getModifiedDate(),
+//                    comment.getBoard()); // 얘는 어떠케,,,?
+//        }
+
         return resComments;
     }
+
+
 }

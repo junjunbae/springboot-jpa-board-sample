@@ -2,6 +2,7 @@ package com.example.sampleboard.controller.board;
 
 import com.example.sampleboard.entity.board.dto.BoardRequestDto;
 import com.example.sampleboard.entity.board.dto.BoardResponseDto;
+import com.example.sampleboard.enumc.SearchType;
 import com.example.sampleboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

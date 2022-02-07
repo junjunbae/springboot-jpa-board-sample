@@ -30,7 +30,7 @@ public class Board extends BaseEntity {
 
     @OneToMany(mappedBy = "board")
     @JsonIgnore
-    private List<Comment> comment;
+    private List<Comment> comments;
 
     private Board(String title, String contents, int hit, boolean useYn) {
         this.title = title;

@@ -10,11 +10,11 @@ import java.util.Optional;
 public interface BoardRepository extends JpaRepository<Board, Long> {
     Optional<Board> findByBoardIdAndUseYn(Long boardId, boolean useYn);
 
-    Page<Board> findByUseYn(boolean useYn, Pageable pageSort);
+    Page<Board> findByUseYnTrue(Pageable pageSort);
 
-    Page<Board> findByUseYnAndTitleContains(boolean useYn, String searchKeyword, Pageable boardId);
+    Page<Board> findByUseYnTrueAndTitleContains(String searchKeyword, Pageable boardId);
 
-    Page<Board> findByUseYnAndContentsContains(boolean useYn, String searchKeyword, Pageable boardId);
+    Page<Board> findByUseYnTrueAndContentsContains(String searchKeyword, Pageable boardId);
 
-    Page<Board> findByUseYnAndCreatedIdContains(boolean useYn, String searchKeyword, Pageable boardId);
+    Page<Board> findByUseYnTrueAndCreatedIdContains(String searchKeyword, Pageable boardId);
 }
